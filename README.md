@@ -1,16 +1,26 @@
 # APIMailer Node.js SDK
 
-使用 JavaScript 或 TypeScript 调用 [APIMailer](https://apimailer.cc) 发送邮件。SDK 无运行时依赖，支持 Node.js 18 及以上版本，并同时提供 ESM、CommonJS 和完整类型声明。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-## 安装
+Send email through [APIMailer](https://apimailer.cc) from JavaScript or TypeScript. The SDK has no runtime dependencies, supports Node.js 18 and later, and includes ESM, CommonJS, and TypeScript declarations.
+
+## Features
+
+- Small, zero-runtime-dependency client
+- First-class TypeScript support
+- ESM and CommonJS entry points
+- Configurable request timeouts and cancellation with `AbortSignal`
+- Structured errors for API, network, timeout, and cancellation failures
+
+## Installation
 
 ```bash
 npm install @apimailer/sdk
 ```
 
-## 快速开始
+## Quick start
 
-请将 API Key 放在服务端环境变量中，不要提交到代码仓库或暴露给浏览器。
+Store your API key in a server-side environment variable. Never commit it to source control or expose it in browser code.
 
 ```bash
 export APIMAILER_API_KEY="mw_live_your_api_key"
@@ -32,7 +42,7 @@ const result = await mailer.send({
 console.log(result);
 ```
 
-CommonJS 项目可以这样使用：
+For CommonJS projects:
 
 ```js
 const { APIMailer } = require("@apimailer/sdk");
@@ -42,17 +52,24 @@ const mailer = new APIMailer({
 });
 ```
 
-## 配置
+## Configuration
 
 ```ts
 const mailer = new APIMailer({
   apiKey: process.env.APIMAILER_API_KEY!,
-  timeout: 15_000, // 默认 10 秒，设为 0 可禁用超时
-  // baseUrl: "https://apimailer.cc", // 使用代理或测试服务时可覆盖
+  timeout: 15_000, // Defaults to 10 seconds; use 0 to disable
+  // baseUrl: "https://apimailer.cc", // Override for a proxy or test server
 });
 ```
 
-单次请求也可以覆盖超时或通过 `AbortSignal` 主动取消：
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `apiKey` | `string` | Required | Your APIMailer API key |
+| `baseUrl` | `string` | `https://apimailer.cc` | API origin or proxy URL |
+| `timeout` | `number` | `10000` | Timeout in milliseconds; `0` disables it |
+| `fetch` | `APIMailerFetch` | Global `fetch` | Optional fetch-compatible implementation |
+
+You can override the timeout for one request or cancel it with an `AbortSignal`:
 
 ```ts
 const controller = new AbortController();
@@ -70,9 +87,9 @@ await mailer.send(
 );
 ```
 
-## 错误处理
+## Error handling
 
-网络错误、超时、请求取消以及非 2xx API 响应都会抛出 `APIMailerError`。HTTP 错误还包含状态码、服务端响应和可选的请求 ID。
+Network errors, timeouts, cancellations, and non-2xx API responses throw an `APIMailerError`. HTTP errors also include the status code, server response, and request ID when available.
 
 ```ts
 import { APIMailerError } from "@apimailer/sdk";
@@ -92,31 +109,46 @@ try {
 }
 ```
 
-常见 SDK 错误码：
+SDK error codes:
 
-- `HTTP_ERROR`：API 返回了非 2xx 状态（如果 API 返回自己的 `code`，将优先使用它）
-- `NETWORK_ERROR`：无法连接 API
-- `TIMEOUT`：请求超过配置的超时时间
-- `ABORTED`：调用方取消了请求
+- `HTTP_ERROR`: the API returned a non-2xx status. An API-provided `code` takes precedence when present.
+- `NETWORK_ERROR`: the SDK could not reach the API.
+- `TIMEOUT`: the request exceeded its configured timeout.
+- `ABORTED`: the caller cancelled the request.
 
-## API
+## API reference
 
 ### `new APIMailer(options)`
 
-- `apiKey`：必填，APIMailer API Key
-- `baseUrl`：可选，默认 `https://apimailer.cc`
-- `timeout`：可选，默认 `10000` 毫秒；设为 `0` 禁用
-- `fetch`：可选，自定义 fetch-compatible 实现
+Creates an APIMailer client using the options described above.
 
 ### `mailer.send(email, options?)`
 
-`email` 包含三个必填字符串字段：`to`、`subject`、`body`。`body` 可以是 HTML。
+Sends an email through the `/send` endpoint. `email` contains three required string fields:
+
+- `to`: recipient email address
+- `subject`: subject line
+- `body`: plain text or HTML email body
+
+The optional second argument accepts `timeout` and `signal`.
+
+If your application knows the exact API response shape, you can provide it as a generic type:
+
+```ts
+type SendResult = { id: string; success: boolean };
+
+const result = await mailer.send<SendResult>({
+  to: "user@example.com",
+  subject: "Hello",
+  body: "<p>Hello.</p>",
+});
+```
 
 ### `createClient(options)`
 
-`new APIMailer(options)` 的便捷工厂函数。
+A convenience factory equivalent to `new APIMailer(options)`.
 
-## 开发
+## Development
 
 ```bash
 npm install
