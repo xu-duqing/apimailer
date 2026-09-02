@@ -2,6 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+Website: https://apimailer.cc/
+
 Send email through [APIMailer](https://apimailer.cc) from JavaScript or TypeScript. The SDK has no runtime dependencies, supports Node.js 18 and later, and includes ESM, CommonJS, and TypeScript declarations.
 
 ## Features

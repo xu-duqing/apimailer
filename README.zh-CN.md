@@ -2,6 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+官网：https://apimailer.cc/
+
 使用 JavaScript 或 TypeScript 调用 [APIMailer](https://apimailer.cc) 发送邮件。SDK 无运行时依赖，支持 Node.js 18 及以上版本，并同时提供 ESM、CommonJS 和完整类型声明。
 
 ## 安装

@@ -1,7 +1,11 @@
 {
   "name": "@apimailer/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official TypeScript and JavaScript SDK for sending email with APIMailer.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xu-duqing/apimailer.git"
+  },
   "keywords": [
     "apimailer",
     "email",
